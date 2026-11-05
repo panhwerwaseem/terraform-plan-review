@@ -1,0 +1,369 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.5",
+  "resource_changes": [
+    {
+      "address": "aws_iam_policy.deploy",
+      "mode": "managed",
+      "type": "aws_iam_policy",
+      "name": "deploy",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "deploy",
+          "path": "/",
+          "policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Sid\": \"DeployArtifacts\", \"Effect\": \"Allow\", \"Action\": [\"s3:GetObject\", \"s3:PutObject\"], \"Resource\": \"arn:aws:s3:::acme-artifacts/*\"}]}",
+          "arn": "arn:aws:iam::111122223333:policy/deploy"
+        },
+        "after": {
+          "name": "deploy",
+          "path": "/",
+          "policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Sid\": \"DeployArtifacts\", \"Effect\": \"Allow\", \"Action\": [\"s3:GetObject\", \"s3:PutObject\"], \"Resource\": \"arn:aws:s3:::acme-artifacts/*\"}, {\"Sid\": \"Everything\", \"Effect\": \"Allow\", \"Action\": \"*\", \"Resource\": \"*\"}]}",
+          "arn": "arn:aws:iam::111122223333:policy/deploy"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_iam_role_policy.ci_pull",
+      "mode": "managed",
+      "type": "aws_iam_role_policy",
+      "name": "ci_pull",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "ci-pull",
+          "role": "ci",
+          "policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Action\": [\"ecr:GetAuthorizationToken\"], \"Resource\": \"*\"}]}"
+        },
+        "after": {
+          "name": "ci-pull",
+          "role": "ci",
+          "policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Action\": [\"ecr:GetAuthorizationToken\", \"ecr:BatchGetImage\"], \"Resource\": \"*\"}]}"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_s3_bucket_policy.reports",
+      "mode": "managed",
+      "type": "aws_s3_bucket_policy",
+      "name": "reports",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "bucket": "acme-reports",
+          "policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Sid\": \"Reporting\", \"Effect\": \"Allow\", \"Principal\": {\"AWS\": \"arn:aws:iam::111122223333:role/reporting\"}, \"Action\": \"s3:GetObject\", \"Resource\": \"arn:aws:s3:::acme-reports/*\"}]}"
+        },
+        "after": {
+          "bucket": "acme-reports",
+          "policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Sid\": \"Reporting\", \"Effect\": \"Allow\", \"Principal\": \"*\", \"Action\": \"s3:GetObject\", \"Resource\": \"arn:aws:s3:::acme-reports/*\"}]}"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_security_group_rule.ssh",
+      "mode": "managed",
+      "type": "aws_security_group_rule",
+      "name": "ssh",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "type": "ingress",
+          "from_port": 22,
+          "to_port": 22,
+          "protocol": "tcp",
+          "cidr_blocks": [
+            "0.0.0.0/0"
+          ],
+          "ipv6_cidr_blocks": null,
+          "security_group_id": "sg-0123456789abcdef0",
+          "description": "temporary ssh"
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.reports",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "reports",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "bucket": "acme-reports",
+          "block_public_acls": true,
+          "block_public_policy": true,
+          "ignore_public_acls": true,
+          "restrict_public_buckets": true
+        },
+        "after": {
+          "bucket": "acme-reports",
+          "block_public_acls": true,
+          "block_public_policy": false,
+          "ignore_public_acls": true,
+          "restrict_public_buckets": false
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_db_instance.orders",
+      "mode": "managed",
+      "type": "aws_db_instance",
+      "name": "orders",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "identifier": "orders-prod",
+          "engine": "postgres",
+          "engine_version": "15.7",
+          "instance_class": "db.m6g.large",
+          "allocated_storage": 200,
+          "storage_type": "gp3",
+          "storage_encrypted": true,
+          "kms_key_id": null,
+          "multi_az": true,
+          "backup_retention_period": 7,
+          "deletion_protection": true,
+          "skip_final_snapshot": false,
+          "final_snapshot_identifier": null,
+          "publicly_accessible": false,
+          "db_subnet_group_name": "orders",
+          "username": "orders_admin",
+          "password": "example-only-not-a-real-password",
+          "arn": "arn:aws:rds:eu-west-1:111122223333:db:orders-prod",
+          "id": "db-ORDERSPRODEXAMPLE",
+          "endpoint": "orders-prod.c9akciq32.eu-west-1.rds.amazonaws.com:5432",
+          "tags": {
+            "service": "orders"
+          }
+        },
+        "after": {
+          "identifier": "orders-prod",
+          "engine": "postgres",
+          "engine_version": "15.7",
+          "instance_class": "db.m6g.large",
+          "allocated_storage": 200,
+          "storage_type": "gp3",
+          "storage_encrypted": true,
+          "kms_key_id": null,
+          "multi_az": true,
+          "backup_retention_period": 7,
+          "deletion_protection": false,
+          "skip_final_snapshot": false,
+          "final_snapshot_identifier": null,
+          "publicly_accessible": true,
+          "db_subnet_group_name": "orders",
+          "username": "orders_admin",
+          "password": "example-only-not-a-real-password",
+          "arn": "arn:aws:rds:eu-west-1:111122223333:db:orders-prod",
+          "id": "db-ORDERSPRODEXAMPLE",
+          "endpoint": "orders-prod.c9akciq32.eu-west-1.rds.amazonaws.com:5432",
+          "tags": {
+            "service": "orders"
+          }
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "password": true
+        },
+        "after_sensitive": {
+          "password": true
+        }
+      }
+    },
+    {
+      "address": "aws_iam_role.worker",
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "worker",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "worker",
+          "path": "/",
+          "assume_role_policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Principal\": {\"Service\": \"ec2.amazonaws.com\"}, \"Action\": \"sts:AssumeRole\"}]}",
+          "max_session_duration": 3600
+        },
+        "after_unknown": {
+          "arn": true,
+          "id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_iam_role_policy.worker_queue",
+      "mode": "managed",
+      "type": "aws_iam_role_policy",
+      "name": "worker_queue",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "worker-queue",
+          "role": "worker"
+        },
+        "after_unknown": {
+          "id": true,
+          "policy": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_iam_role_policy_attachment.worker_admin",
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "worker_admin",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "role": "worker",
+          "policy_arn": "arn:aws:iam::aws:policy/AdministratorAccess"
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_security_group.internal",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "internal",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "orders-internal",
+          "description": "orders application",
+          "vpc_id": "vpc-0123456789abcdef0",
+          "id": "sg-0123456789abcdef0",
+          "ingress": [
+            {
+              "description": "https from the VPC",
+              "from_port": 443,
+              "to_port": 443,
+              "protocol": "tcp",
+              "cidr_blocks": [
+                "10.0.0.0/8"
+              ],
+              "ipv6_cidr_blocks": [],
+              "security_groups": [],
+              "self": false
+            }
+          ],
+          "egress": [
+            {
+              "description": "",
+              "from_port": 0,
+              "to_port": 0,
+              "protocol": "-1",
+              "cidr_blocks": [
+                "0.0.0.0/0"
+              ],
+              "ipv6_cidr_blocks": [],
+              "security_groups": [],
+              "self": false
+            }
+          ],
+          "tags": {
+            "service": "orders"
+          }
+        },
+        "after": {
+          "name": "orders-internal",
+          "description": "orders application",
+          "vpc_id": "vpc-0123456789abcdef0",
+          "id": "sg-0123456789abcdef0",
+          "ingress": [
+            {
+              "description": "https from the VPC",
+              "from_port": 443,
+              "to_port": 443,
+              "protocol": "tcp",
+              "cidr_blocks": [
+                "10.0.0.0/8"
+              ],
+              "ipv6_cidr_blocks": [],
+              "security_groups": [],
+              "self": false
+            }
+          ],
+          "egress": [
+            {
+              "description": "",
+              "from_port": 0,
+              "to_port": 0,
+              "protocol": "-1",
+              "cidr_blocks": [
+                "0.0.0.0/0"
+              ],
+              "ipv6_cidr_blocks": [],
+              "security_groups": [],
+              "self": false
+            }
+          ],
+          "tags": {
+            "service": "orders",
+            "owner": "platform"
+          }
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

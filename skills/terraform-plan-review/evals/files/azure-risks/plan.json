@@ -1,0 +1,223 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.5",
+  "resource_changes": [
+    {
+      "address": "azurerm_network_security_rule.rdp",
+      "mode": "managed",
+      "type": "azurerm_network_security_rule",
+      "name": "rdp",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "allow-rdp",
+          "priority": 100,
+          "direction": "Inbound",
+          "access": "Allow",
+          "protocol": "Tcp",
+          "source_port_range": "*",
+          "destination_port_range": "3389",
+          "source_address_prefix": "*",
+          "destination_address_prefix": "*",
+          "resource_group_name": "rg-billing",
+          "network_security_group_name": "nsg-billing"
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_network_security_rule.outbound",
+      "mode": "managed",
+      "type": "azurerm_network_security_rule",
+      "name": "outbound",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "allow-outbound",
+          "priority": 200,
+          "direction": "Outbound",
+          "access": "Allow",
+          "protocol": "Tcp",
+          "source_port_range": "*",
+          "destination_port_range": "443",
+          "source_address_prefix": "*",
+          "destination_address_prefix": "*",
+          "resource_group_name": "rg-billing",
+          "network_security_group_name": "nsg-billing"
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_role_assignment.ops_owner",
+      "mode": "managed",
+      "type": "azurerm_role_assignment",
+      "name": "ops_owner",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "scope": "/subscriptions/00000000-0000-0000-0000-000000000000",
+          "role_definition_name": "Owner",
+          "principal_id": "11111111-2222-3333-4444-555555555555"
+        },
+        "after_unknown": {
+          "id": true,
+          "role_definition_id": true,
+          "principal_type": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_storage_container.exports",
+      "mode": "managed",
+      "type": "azurerm_storage_container",
+      "name": "exports",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "exports",
+          "storage_account_name": "stbillingexports",
+          "container_access_type": "private"
+        },
+        "after": {
+          "name": "exports",
+          "storage_account_name": "stbillingexports",
+          "container_access_type": "blob"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_mssql_database.billing",
+      "mode": "managed",
+      "type": "azurerm_mssql_database",
+      "name": "billing",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "name": "billing",
+          "server_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-billing/providers/Microsoft.Sql/servers/sql-billing",
+          "sku_name": "GP_Gen5_4",
+          "max_size_gb": 250,
+          "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-billing/providers/Microsoft.Sql/servers/sql-billing/databases/billing"
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": false
+      },
+      "action_reason": "delete_because_no_resource_config"
+    },
+    {
+      "address": "azurerm_management_lock.billing",
+      "mode": "managed",
+      "type": "azurerm_management_lock",
+      "name": "billing",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "name": "do-not-delete",
+          "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-billing",
+          "lock_level": "CanNotDelete",
+          "notes": "billing data"
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": false
+      },
+      "action_reason": "delete_because_no_resource_config"
+    },
+    {
+      "address": "azurerm_storage_account.logs",
+      "mode": "managed",
+      "type": "azurerm_storage_account",
+      "name": "logs",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "stbillinglogs",
+          "resource_group_name": "rg-billing",
+          "account_tier": "Standard",
+          "account_replication_type": "GRS",
+          "public_network_access_enabled": false,
+          "allow_nested_items_to_be_public": false
+        },
+        "after": {
+          "name": "stbillinglogs",
+          "resource_group_name": "rg-billing",
+          "account_tier": "Standard",
+          "account_replication_type": "GRS",
+          "public_network_access_enabled": true,
+          "allow_nested_items_to_be_public": false
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_linux_virtual_machine.app",
+      "mode": "managed",
+      "type": "azurerm_linux_virtual_machine",
+      "name": "app",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "vm-billing-app",
+          "resource_group_name": "rg-billing",
+          "size": "Standard_D2s_v5",
+          "admin_username": "azureuser"
+        },
+        "after": {
+          "name": "vm-billing-app",
+          "resource_group_name": "rg-billing",
+          "size": "Standard_D8s_v5",
+          "admin_username": "azureuser"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

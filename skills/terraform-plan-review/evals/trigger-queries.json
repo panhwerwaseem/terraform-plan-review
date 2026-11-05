@@ -1,0 +1,27 @@
+{
+  "skill_name": "terraform-plan-review",
+  "should_trigger": [
+    "can you review this terraform plan before I apply it to prod? the plan JSON is in /tmp/plan.json",
+    "terraform plan says 3 to destroy and I only changed a tag, what is going on",
+    "why does this plan say aws_db_instance.main must be replaced",
+    "CI produced tfplan from my PR, is it safe to apply?",
+    "tofu plan shows forces replacement on our storage bucket, how do I avoid losing the data",
+    "check this plan for IAM wildcards or security groups opened to 0.0.0.0/0",
+    "I moved resources into a module and now the plan wants to destroy and recreate everything",
+    "what's the blast radius of this infrastructure change? here's the output of terraform show -json",
+    "the plan turns off deletion protection on the RDS cluster, should I approve this PR",
+    "which changes in this terraform plan are going to increase our cloud bill"
+  ],
+  "should_not_trigger": [
+    "write a terraform module for a VPC with three private subnets",
+    "terraform init fails with a provider checksum mismatch",
+    "convert this CloudFormation template to Terraform",
+    "upgrade the AWS provider from v4 to v5 and fix the deprecation warnings",
+    "our terraform state is locked by a crashed CI job, how do I unlock it",
+    "set up a remote backend with S3 and state locking",
+    "explain the difference between count and for_each",
+    "how much does an m6i.2xlarge cost per month in eu-west-1",
+    "audit the IAM policies in our live AWS account for unused permissions",
+    "review this Kubernetes deployment manifest for reliability problems"
+  ]
+}

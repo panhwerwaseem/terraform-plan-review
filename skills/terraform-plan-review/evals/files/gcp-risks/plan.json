@@ -1,0 +1,275 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.5",
+  "resource_changes": [
+    {
+      "address": "google_compute_firewall.allow_admin",
+      "mode": "managed",
+      "type": "google_compute_firewall",
+      "name": "allow_admin",
+      "provider_name": "registry.terraform.io/hashicorp/google",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "allow-admin",
+          "network": "prod",
+          "direction": "INGRESS",
+          "disabled": false,
+          "source_ranges": [
+            "0.0.0.0/0"
+          ],
+          "allow": [
+            {
+              "protocol": "tcp",
+              "ports": [
+                "22",
+                "3389"
+              ]
+            }
+          ],
+          "deny": []
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "google_compute_firewall.allow_egress",
+      "mode": "managed",
+      "type": "google_compute_firewall",
+      "name": "allow_egress",
+      "provider_name": "registry.terraform.io/hashicorp/google",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "allow-egress",
+          "network": "prod",
+          "direction": "EGRESS",
+          "disabled": false,
+          "destination_ranges": [
+            "0.0.0.0/0"
+          ],
+          "allow": [
+            {
+              "protocol": "all",
+              "ports": []
+            }
+          ],
+          "deny": []
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "google_project_iam_member.contractor_owner",
+      "mode": "managed",
+      "type": "google_project_iam_member",
+      "name": "contractor_owner",
+      "provider_name": "registry.terraform.io/hashicorp/google",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "project": "acme-prod",
+          "role": "roles/owner",
+          "member": "user:contractor@example.com"
+        },
+        "after_unknown": {
+          "id": true,
+          "etag": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "google_storage_bucket_iam_member.public_exports",
+      "mode": "managed",
+      "type": "google_storage_bucket_iam_member",
+      "name": "public_exports",
+      "provider_name": "registry.terraform.io/hashicorp/google",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "bucket": "acme-prod-exports",
+          "role": "roles/storage.objectViewer",
+          "member": "allUsers"
+        },
+        "after_unknown": {
+          "id": true,
+          "etag": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "google_sql_database_instance.orders",
+      "mode": "managed",
+      "type": "google_sql_database_instance",
+      "name": "orders",
+      "provider_name": "registry.terraform.io/hashicorp/google",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "orders",
+          "database_version": "POSTGRES_15",
+          "region": "europe-west1",
+          "deletion_protection": true,
+          "settings": [
+            {
+              "tier": "db-custom-2-7680",
+              "availability_type": "REGIONAL",
+              "disk_size": 100,
+              "disk_type": "PD_SSD"
+            }
+          ]
+        },
+        "after": {
+          "name": "orders",
+          "database_version": "POSTGRES_15",
+          "region": "europe-west1",
+          "deletion_protection": false,
+          "settings": [
+            {
+              "tier": "db-custom-8-30720",
+              "availability_type": "REGIONAL",
+              "disk_size": 100,
+              "disk_type": "PD_SSD"
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "google_kms_crypto_key.orders_data",
+      "mode": "managed",
+      "type": "google_kms_crypto_key",
+      "name": "orders_data",
+      "provider_name": "registry.terraform.io/hashicorp/google",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "name": "orders-data",
+          "key_ring": "projects/acme-prod/locations/europe-west1/keyRings/orders",
+          "purpose": "ENCRYPT_DECRYPT",
+          "rotation_period": "7776000s",
+          "id": "projects/acme-prod/locations/europe-west1/keyRings/orders/cryptoKeys/orders-data"
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": false
+      },
+      "action_reason": "delete_because_no_resource_config"
+    },
+    {
+      "address": "google_storage_bucket.assets",
+      "mode": "managed",
+      "type": "google_storage_bucket",
+      "name": "assets",
+      "provider_name": "registry.terraform.io/hashicorp/google",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "acme-prod-assets",
+          "location": "EU",
+          "force_destroy": false,
+          "public_access_prevention": "enforced",
+          "storage_class": "STANDARD"
+        },
+        "after": {
+          "name": "acme-prod-assets",
+          "location": "EU",
+          "force_destroy": true,
+          "public_access_prevention": "inherited",
+          "storage_class": "STANDARD"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "google_project_iam_binding.editors",
+      "mode": "managed",
+      "type": "google_project_iam_binding",
+      "name": "editors",
+      "provider_name": "registry.terraform.io/hashicorp/google",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "project": "acme-prod",
+          "role": "roles/editor",
+          "members": [
+            "group:platform@example.com"
+          ]
+        },
+        "after": {
+          "project": "acme-prod",
+          "role": "roles/editor",
+          "members": [
+            "group:all-staff@example.com",
+            "group:platform@example.com"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "google_service_account_iam_member.deployer",
+      "mode": "managed",
+      "type": "google_service_account_iam_member",
+      "name": "deployer",
+      "provider_name": "registry.terraform.io/hashicorp/google",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "role": "roles/iam.serviceAccountTokenCreator"
+        },
+        "after_unknown": {
+          "id": true,
+          "etag": true,
+          "member": true,
+          "service_account_id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "skill_name": "terraform-plan-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We're turning on encryption at rest for the orders database and moving its data volume to eu-west-1b. CI saved the plan and I exported it with terraform show -json to evals/files/forced-replacement/plan.json. Can you look it over before I approve the apply?",
+      "expected_output": "The agent runs plan_review.py and access_review.py on the given file. It reports that aws_db_instance.orders is replaced (destroyed, then re-created) because of storage_encrypted, and aws_ebs_volume.orders_data is replaced because of availability_zone, both as data-destroying, citing the replace_paths evidence. It states that the database's current state has skip_final_snapshot = true, so no final snapshot is taken. It also reports the replacement of aws_instance.worker forced by ami and the deletion of aws_route53_record.legacy_api, lists the cost-affecting changes (autoscaling capacity 3 to 6, max size 6 to 12, launch template instance type) without prices, and proposes a migration path (snapshot, encrypted copy, restore to a new instance; snapshot and new volume in the target zone) instead of applying the plan as it is. It does not apply anything or change state.",
+      "files": [
+        "evals/files/forced-replacement/plan.json"
+      ],
+      "assertions": [
+        "The agent ran scripts/plan_review.py on evals/files/forced-replacement/plan.json and based its findings on the script output",
+        "The report names aws_db_instance.orders as replaced with storage_encrypted as the forcing attribute, and says its data would be destroyed",
+        "The report names aws_ebs_volume.orders_data as replaced with availability_zone as the forcing attribute, and says its data would be destroyed",
+        "The report states that no final snapshot would be taken for the database (skip_final_snapshot is true), or explicitly says no backup was found in the plan",
+        "The report also mentions the replacement of aws_instance.worker and the deletion of aws_route53_record.legacy_api",
+        "The agent did not describe the plan as safe or approve it, and it proposed a migration path that keeps the data rather than applying the replacement",
+        "Cost-affecting changes are listed without any price or currency figure",
+        "The agent did not run terraform apply, terraform destroy, or any terraform state or import command",
+        "The agent did not print the database password value from the plan JSON"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I refactored our orders stack into modules (database, storage, network). No infrastructure should change. terraform plan says 3 to add and 3 to destroy, which a teammate says is just how module moves look. The plan JSON is at evals/files/rename-refactor/plan.json. OK to apply?",
+      "expected_output": "The agent runs the scripts and answers no. The plan destroys aws_db_instance.orders and aws_s3_bucket.uploads (both stateful) and aws_security_group.app, and creates the same types at module addresses. The agent explains that these are the same objects at new addresses with no moved blocks, and writes the three moved blocks (aws_db_instance.orders to module.database.aws_db_instance.orders, aws_s3_bucket.uploads to module.storage.aws_s3_bucket.uploads, aws_security_group.app to module.network.aws_security_group.app). It points out that the DynamoDB table was moved correctly. It asks the user to add the blocks, make a new saved plan and have it reviewed again, expecting no creates and no destroys. It does not run terraform state mv and does not apply.",
+      "files": [
+        "evals/files/rename-refactor/plan.json"
+      ],
+      "assertions": [
+        "The agent ran scripts/plan_review.py on evals/files/rename-refactor/plan.json",
+        "The agent said the plan must not be applied as it is, because it destroys the database and the bucket",
+        "The report states the data impact of destroying aws_db_instance.orders and aws_s3_bucket.uploads",
+        "The agent identified the cause as resources moved into modules without moved blocks, not as an expected side effect of the refactor",
+        "The agent provided moved blocks with the correct from and to addresses for the database, the bucket and the security group",
+        "The agent told the user to produce a new saved plan after adding the blocks and to have it reviewed again before applying",
+        "The agent did not run terraform state mv, terraform import, terraform apply, or edit a state file"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Quick review please. evals/files/permission-widening/plan.json is the saved plan for the PR 'deploy role cleanup + temporary ssh for debugging'. Nothing gets destroyed, so I think it's low risk. Approve?",
+      "expected_output": "The agent runs both scripts. plan_review.py reports no destroy or replacement; access_review.py reports eight HIGH findings. The agent does not approve. It lists each: aws_iam_policy.deploy gains Allow Action * on Resource *; aws_s3_bucket_policy.reports now allows Principal *; aws_security_group_rule.ssh opens port 22 to 0.0.0.0/0; the reports bucket's public access block has block_public_policy and restrict_public_buckets turned off; aws_db_instance.orders loses deletion protection and becomes publicly accessible; AdministratorAccess is attached to the worker role. It reports the MEDIUM findings, including that the worker_queue role policy is unknown until apply and was not reviewed. It suggests narrower alternatives and asks which changes the PR intended.",
+      "files": [
+        "evals/files/permission-widening/plan.json"
+      ],
+      "assertions": [
+        "The agent ran scripts/access_review.py as well as scripts/plan_review.py on the plan JSON",
+        "The agent did not approve the plan and did not accept 'nothing gets destroyed' as a reason that it is low risk",
+        "The report includes the wildcard statement added to aws_iam_policy.deploy and the Principal * added to aws_s3_bucket_policy.reports",
+        "The report includes the SSH ingress from 0.0.0.0/0, the weakened S3 public access block, and the AdministratorAccess attachment",
+        "The report includes both changes to aws_db_instance.orders: deletion protection turned off and publicly_accessible turned on",
+        "The report says the policy of aws_iam_role_policy.worker_queue is unknown until apply and was not reviewed",
+        "The report does not flag aws_security_group.internal or the trust policy of aws_iam_role.worker as problems",
+        "Each reported finding cites the resource address, and the agent did not run terraform apply or any state command"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Routine change: tag updates, a new 5xx alarm, a new ingress rule from inside the VPC and a longer backup retention on the orders database. The plan JSON is at evals/files/low-risk/plan.json. Anything I should worry about before applying?",
+      "expected_output": "The agent runs both scripts and reports that neither produced a finding at any severity: no destroy, no replacement, no widened permission, no opened ingress, no guard removed. It summarises the actions (4 create, 3 update, 2 no-op), mentions that one resource moved to a new address with no infrastructure change and that one data source is read during apply, and lists the new resources as cost-affecting without prices. It says clearly that this is not an approval and that the scripts check a fixed list of rules. It does not invent risks and does not apply.",
+      "files": [
+        "evals/files/low-risk/plan.json"
+      ],
+      "assertions": [
+        "The agent ran both scripts on evals/files/low-risk/plan.json",
+        "The report states that no blocking finding was found, and does not claim any resource is destroyed, replaced, made public or granted wider permissions",
+        "The agent did not invent a risk that is absent from the script output, such as flagging the 10.20.0.0/16 ingress rule or the existing egress rule as open to the internet",
+        "The report says the result is not an approval or names the limits of what the scripts check",
+        "The agent did not run terraform apply or any state command"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Two more plans for Friday's change window: evals/files/azure-risks/plan.json (billing, Azure) and evals/files/gcp-risks/plan.json (orders, Google Cloud). I need a go or no-go for each, with reasons.",
+      "expected_output": "The agent runs both scripts on both plans and reports each plan separately. Azure: no-go. azurerm_mssql_database.billing is destroyed (data loss), the management lock on the resource group is deleted, an inbound rule allows RDP (3389) from any source, Owner is assigned at subscription scope, the exports container becomes blob-public, and public network access is turned on for the logs storage account; the VM size change is listed as cost-affecting. Google Cloud: no-go. google_kms_crypto_key.orders_data is destroyed, which makes data encrypted under it unreadable; a firewall rule opens 22 and 3389 to 0.0.0.0/0; roles/owner is granted to user:contractor@example.com; allUsers gets objectViewer on a bucket; deletion protection is turned off on the Cloud SQL instance; force_destroy is turned on and public access prevention is relaxed on the assets bucket; roles/editor gains all-staff; one IAM member is unknown until apply. The agent does not apply either plan.",
+      "files": [
+        "evals/files/azure-risks/plan.json",
+        "evals/files/gcp-risks/plan.json"
+      ],
+      "assertions": [
+        "The agent ran both scripts on each of the two plan files and reported the two plans separately",
+        "The Azure report includes the destruction of azurerm_mssql_database.billing with a data impact statement, and the removal of the management lock",
+        "The Azure report includes the inbound RDP rule open to any source, the Owner role assignment, and the storage container made public",
+        "The Google Cloud report includes the destruction of google_kms_crypto_key.orders_data and explains that data encrypted under it becomes unreadable",
+        "The Google Cloud report includes the firewall rule open to 0.0.0.0/0, the roles/owner grant, the allUsers grant, and deletion protection turned off on the Cloud SQL instance",
+        "The agent did not flag the outbound Azure rule or the Google egress firewall rule as inbound exposure",
+        "Neither plan is given a go, and the agent did not run terraform apply or any state command"
+      ]
+    }
+  ]
+}

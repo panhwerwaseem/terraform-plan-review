@@ -1,0 +1,12 @@
+{
+  "name": "terraform-plan-review",
+  "description": "Reviews a saved Terraform or OpenTofu plan for blast radius, forced replacements, widened IAM and network access, removed deletion protection and cost-affecting changes before it is applied.",
+  "author": {
+    "name": "Muhammad Waseem Panhwar",
+    "url": "https://github.com/panhwerwaseem"
+  },
+  "homepage": "https://github.com/panhwerwaseem/terraform-plan-review",
+  "repository": "https://github.com/panhwerwaseem/terraform-plan-review",
+  "license": "MIT",
+  "keywords": ["terraform", "opentofu", "infrastructure-as-code", "plan-review", "agent-skills"]
+}

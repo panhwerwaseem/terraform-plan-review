@@ -1,0 +1,282 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.5",
+  "resource_changes": [
+    {
+      "address": "aws_db_instance.orders",
+      "mode": "managed",
+      "type": "aws_db_instance",
+      "name": "orders",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "identifier": "orders-prod",
+          "engine": "postgres",
+          "engine_version": "15.7",
+          "instance_class": "db.m6g.large",
+          "allocated_storage": 200,
+          "storage_type": "gp3",
+          "storage_encrypted": true,
+          "kms_key_id": "arn:aws:kms:eu-west-1:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+          "multi_az": true,
+          "backup_retention_period": 7,
+          "deletion_protection": false,
+          "skip_final_snapshot": false,
+          "final_snapshot_identifier": "orders-prod-final",
+          "publicly_accessible": false,
+          "db_subnet_group_name": "orders",
+          "username": "orders_admin",
+          "password": "example-only-not-a-real-password",
+          "arn": "arn:aws:rds:eu-west-1:111122223333:db:orders-prod",
+          "id": "db-ORDERSPRODEXAMPLE",
+          "endpoint": "orders-prod.c9akciq32.eu-west-1.rds.amazonaws.com:5432",
+          "tags": {
+            "service": "orders"
+          }
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {
+          "password": true
+        },
+        "after_sensitive": false
+      },
+      "action_reason": "delete_because_no_resource_config"
+    },
+    {
+      "address": "aws_s3_bucket.uploads",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "uploads",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "bucket": "acme-orders-uploads",
+          "force_destroy": false,
+          "id": "acme-orders-uploads",
+          "arn": "arn:aws:s3:::acme-orders-uploads",
+          "tags": {
+            "service": "orders"
+          }
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": false
+      },
+      "action_reason": "delete_because_no_resource_config"
+    },
+    {
+      "address": "aws_security_group.app",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "app",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "name": "orders-app",
+          "description": "orders application",
+          "vpc_id": "vpc-0123456789abcdef0",
+          "id": "sg-0123456789abcdef0",
+          "ingress": [
+            {
+              "description": "postgres from the VPC",
+              "from_port": 5432,
+              "to_port": 5432,
+              "protocol": "tcp",
+              "cidr_blocks": [
+                "10.20.0.0/16"
+              ],
+              "ipv6_cidr_blocks": [],
+              "security_groups": [],
+              "self": false
+            }
+          ],
+          "egress": [
+            {
+              "description": "",
+              "from_port": 0,
+              "to_port": 0,
+              "protocol": "-1",
+              "cidr_blocks": [
+                "0.0.0.0/0"
+              ],
+              "ipv6_cidr_blocks": [],
+              "security_groups": [],
+              "self": false
+            }
+          ]
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": false
+      },
+      "action_reason": "delete_because_no_resource_config"
+    },
+    {
+      "address": "module.database.aws_db_instance.orders",
+      "module_address": "module.database",
+      "mode": "managed",
+      "type": "aws_db_instance",
+      "name": "orders",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "identifier": "orders-prod",
+          "engine": "postgres",
+          "engine_version": "15.7",
+          "instance_class": "db.m6g.large",
+          "allocated_storage": 200,
+          "storage_type": "gp3",
+          "storage_encrypted": true,
+          "kms_key_id": "arn:aws:kms:eu-west-1:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+          "multi_az": true,
+          "backup_retention_period": 7,
+          "deletion_protection": false,
+          "skip_final_snapshot": false,
+          "final_snapshot_identifier": "orders-prod-final",
+          "publicly_accessible": false,
+          "db_subnet_group_name": "orders",
+          "username": "orders_admin",
+          "password": "example-only-not-a-real-password",
+          "tags": {
+            "service": "orders"
+          }
+        },
+        "after_unknown": {
+          "arn": true,
+          "id": true,
+          "endpoint": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "password": true
+        }
+      }
+    },
+    {
+      "address": "module.database.aws_dynamodb_table.sessions",
+      "previous_address": "aws_dynamodb_table.sessions",
+      "module_address": "module.database",
+      "mode": "managed",
+      "type": "aws_dynamodb_table",
+      "name": "sessions",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "no-op"
+        ],
+        "before": {
+          "name": "orders-sessions",
+          "billing_mode": "PAY_PER_REQUEST",
+          "hash_key": "session_id",
+          "deletion_protection_enabled": true,
+          "id": "orders-sessions"
+        },
+        "after": {
+          "name": "orders-sessions",
+          "billing_mode": "PAY_PER_REQUEST",
+          "hash_key": "session_id",
+          "deletion_protection_enabled": true,
+          "id": "orders-sessions"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.network.aws_security_group.app",
+      "module_address": "module.network",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "app",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "orders-app",
+          "description": "orders application",
+          "vpc_id": "vpc-0123456789abcdef0",
+          "ingress": [
+            {
+              "description": "postgres from the VPC",
+              "from_port": 5432,
+              "to_port": 5432,
+              "protocol": "tcp",
+              "cidr_blocks": [
+                "10.20.0.0/16"
+              ],
+              "ipv6_cidr_blocks": [],
+              "security_groups": [],
+              "self": false
+            }
+          ],
+          "egress": [
+            {
+              "description": "",
+              "from_port": 0,
+              "to_port": 0,
+              "protocol": "-1",
+              "cidr_blocks": [
+                "0.0.0.0/0"
+              ],
+              "ipv6_cidr_blocks": [],
+              "security_groups": [],
+              "self": false
+            }
+          ]
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.storage.aws_s3_bucket.uploads",
+      "module_address": "module.storage",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "uploads",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "bucket": "acme-orders-uploads",
+          "force_destroy": false,
+          "tags": {
+            "service": "orders"
+          }
+        },
+        "after_unknown": {
+          "id": true,
+          "arn": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

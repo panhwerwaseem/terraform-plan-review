@@ -1,0 +1,15 @@
+{
+  "name": "panhwerwaseem-terraform-plan-review",
+  "owner": {
+    "name": "Muhammad Waseem Panhwar",
+    "url": "https://github.com/panhwerwaseem"
+  },
+  "description": "Single-skill marketplace for terraform-plan-review.",
+  "plugins": [
+    {
+      "name": "terraform-plan-review",
+      "source": "./",
+      "description": "Reviews a saved Terraform or OpenTofu plan for blast radius, forced replacements, widened IAM and network access, removed deletion protection and cost-affecting changes before it is applied."
+    }
+  ]
+}

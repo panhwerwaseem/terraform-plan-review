@@ -1,0 +1,394 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.5",
+  "resource_changes": [
+    {
+      "address": "aws_instance.api",
+      "mode": "managed",
+      "type": "aws_instance",
+      "name": "api",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "ami": "ami-0a1b2c3d4e5f60718",
+          "instance_type": "m6i.large",
+          "id": "i-0123456789abcdef0",
+          "disable_api_termination": true,
+          "tags": {
+            "Name": "api",
+            "service": "api"
+          },
+          "tags_all": {
+            "Name": "api",
+            "service": "api"
+          }
+        },
+        "after": {
+          "ami": "ami-0a1b2c3d4e5f60718",
+          "instance_type": "m6i.large",
+          "id": "i-0123456789abcdef0",
+          "disable_api_termination": true,
+          "tags": {
+            "Name": "api",
+            "service": "api",
+            "cost-centre": "platform"
+          },
+          "tags_all": {
+            "Name": "api",
+            "service": "api",
+            "cost-centre": "platform"
+          }
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_cloudwatch_metric_alarm.api_5xx",
+      "mode": "managed",
+      "type": "aws_cloudwatch_metric_alarm",
+      "name": "api_5xx",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "alarm_name": "api-5xx",
+          "namespace": "AWS/ApplicationELB",
+          "metric_name": "HTTPCode_Target_5XX_Count",
+          "comparison_operator": "GreaterThanThreshold",
+          "threshold": 25,
+          "period": 60,
+          "evaluation_periods": 5,
+          "statistic": "Sum"
+        },
+        "after_unknown": {
+          "arn": true,
+          "id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_security_group_rule.api_from_vpc",
+      "mode": "managed",
+      "type": "aws_security_group_rule",
+      "name": "api_from_vpc",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "type": "ingress",
+          "from_port": 8080,
+          "to_port": 8080,
+          "protocol": "tcp",
+          "cidr_blocks": [
+            "10.20.0.0/16"
+          ],
+          "ipv6_cidr_blocks": null,
+          "security_group_id": "sg-0123456789abcdef0",
+          "description": "api from the VPC"
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_iam_policy.api_read_config",
+      "mode": "managed",
+      "type": "aws_iam_policy",
+      "name": "api_read_config",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "api-read-config",
+          "path": "/",
+          "policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Sid\": \"ReadConfig\", \"Effect\": \"Allow\", \"Action\": [\"ssm:GetParameter\", \"ssm:GetParametersByPath\"], \"Resource\": \"arn:aws:ssm:eu-west-1:111122223333:parameter/api/*\"}]}"
+        },
+        "after_unknown": {
+          "arn": true,
+          "id": true,
+          "policy_id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_iam_role.api_task",
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "api_task",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "api-task",
+          "path": "/",
+          "max_session_duration": 3600,
+          "assume_role_policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Principal\": {\"Service\": \"ecs-tasks.amazonaws.com\"}, \"Action\": \"sts:AssumeRole\"}]}"
+        },
+        "after_unknown": {
+          "arn": true,
+          "id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_db_instance.orders",
+      "mode": "managed",
+      "type": "aws_db_instance",
+      "name": "orders",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "identifier": "orders-prod",
+          "engine": "postgres",
+          "engine_version": "15.7",
+          "instance_class": "db.m6g.large",
+          "allocated_storage": 200,
+          "storage_type": "gp3",
+          "storage_encrypted": true,
+          "kms_key_id": null,
+          "multi_az": true,
+          "backup_retention_period": 7,
+          "deletion_protection": true,
+          "skip_final_snapshot": false,
+          "final_snapshot_identifier": "orders-prod-final",
+          "publicly_accessible": false,
+          "db_subnet_group_name": "orders",
+          "username": "orders_admin",
+          "password": "example-only-not-a-real-password",
+          "arn": "arn:aws:rds:eu-west-1:111122223333:db:orders-prod",
+          "id": "db-ORDERSPRODEXAMPLE",
+          "endpoint": "orders-prod.c9akciq32.eu-west-1.rds.amazonaws.com:5432",
+          "tags": {
+            "service": "orders"
+          }
+        },
+        "after": {
+          "identifier": "orders-prod",
+          "engine": "postgres",
+          "engine_version": "15.7",
+          "instance_class": "db.m6g.large",
+          "allocated_storage": 200,
+          "storage_type": "gp3",
+          "storage_encrypted": true,
+          "kms_key_id": null,
+          "multi_az": true,
+          "backup_retention_period": 14,
+          "deletion_protection": true,
+          "skip_final_snapshot": false,
+          "final_snapshot_identifier": "orders-prod-final",
+          "publicly_accessible": false,
+          "db_subnet_group_name": "orders",
+          "username": "orders_admin",
+          "password": "example-only-not-a-real-password",
+          "arn": "arn:aws:rds:eu-west-1:111122223333:db:orders-prod",
+          "id": "db-ORDERSPRODEXAMPLE",
+          "endpoint": "orders-prod.c9akciq32.eu-west-1.rds.amazonaws.com:5432",
+          "tags": {
+            "service": "orders"
+          }
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "password": true
+        },
+        "after_sensitive": {
+          "password": true
+        }
+      }
+    },
+    {
+      "address": "aws_security_group.api",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "api",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "api",
+          "description": "orders application",
+          "vpc_id": "vpc-0123456789abcdef0",
+          "id": "sg-0123456789abcdef0",
+          "ingress": [
+            {
+              "description": "postgres from the VPC",
+              "from_port": 5432,
+              "to_port": 5432,
+              "protocol": "tcp",
+              "cidr_blocks": [
+                "10.20.0.0/16"
+              ],
+              "ipv6_cidr_blocks": [],
+              "security_groups": [],
+              "self": false
+            }
+          ],
+          "egress": [
+            {
+              "description": "",
+              "from_port": 0,
+              "to_port": 0,
+              "protocol": "-1",
+              "cidr_blocks": [
+                "0.0.0.0/0"
+              ],
+              "ipv6_cidr_blocks": [],
+              "security_groups": [],
+              "self": false
+            }
+          ],
+          "tags": {
+            "service": "api"
+          }
+        },
+        "after": {
+          "name": "api",
+          "description": "orders application",
+          "vpc_id": "vpc-0123456789abcdef0",
+          "id": "sg-0123456789abcdef0",
+          "ingress": [
+            {
+              "description": "postgres from the VPC",
+              "from_port": 5432,
+              "to_port": 5432,
+              "protocol": "tcp",
+              "cidr_blocks": [
+                "10.20.0.0/16"
+              ],
+              "ipv6_cidr_blocks": [],
+              "security_groups": [],
+              "self": false
+            }
+          ],
+          "egress": [
+            {
+              "description": "",
+              "from_port": 0,
+              "to_port": 0,
+              "protocol": "-1",
+              "cidr_blocks": [
+                "0.0.0.0/0"
+              ],
+              "ipv6_cidr_blocks": [],
+              "security_groups": [],
+              "self": false
+            }
+          ],
+          "tags": {
+            "service": "api",
+            "cost-centre": "platform"
+          }
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_lb_listener.https",
+      "mode": "managed",
+      "type": "aws_lb_listener",
+      "name": "https",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "no-op"
+        ],
+        "before": {
+          "port": 443,
+          "protocol": "HTTPS",
+          "ssl_policy": "ELBSecurityPolicy-TLS13-1-2-2021-06"
+        },
+        "after": {
+          "port": 443,
+          "protocol": "HTTPS",
+          "ssl_policy": "ELBSecurityPolicy-TLS13-1-2-2021-06"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.assets.aws_s3_bucket.this",
+      "previous_address": "aws_s3_bucket.assets",
+      "module_address": "module.assets",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "this",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "no-op"
+        ],
+        "before": {
+          "bucket": "acme-api-assets",
+          "force_destroy": false,
+          "id": "acme-api-assets"
+        },
+        "after": {
+          "bucket": "acme-api-assets",
+          "force_destroy": false,
+          "id": "acme-api-assets"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "data.aws_caller_identity.current",
+      "mode": "data",
+      "type": "aws_caller_identity",
+      "name": "current",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "read"
+        ],
+        "before": null,
+        "after": {},
+        "after_unknown": {
+          "account_id": true,
+          "arn": true,
+          "id": true,
+          "user_id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      },
+      "action_reason": "read_because_dependency_pending"
+    }
+  ]
+}
